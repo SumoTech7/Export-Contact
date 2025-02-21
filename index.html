@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>استيراد جهات الاتصال</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* إعادة تعيين الهوامش والحشو */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            direction: rtl;
+            background: linear-gradient(135deg, #1e3c72, #2a5298); /* تدرج أزرق */
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            width: 100%;
+            max-width: 800px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            margin-bottom: 20px;
+            display: none; /* إخفاء المحتوى حتى يتم إدخال كلمة المرور */
+        }
+
+        h1 {
+            text-align: center;
+            color: #ffeb3b; /* لون أصفر */
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 2px solid #ffeb3b;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        input[type="file"]::file-selector-button {
+            padding: 10px 20px;
+            background: #ffeb3b; /* لون أصفر */
+            border: none;
+            border-radius: 5px;
+            color: #000;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: right;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        th {
+            background: #1e3c72; /* لون أزرق داكن */
+            color: #fff;
+            font-weight: bold;
+        }
+
+        tr:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            margin-top: 20px;
+            background: linear-gradient(135deg, #ff6f61, #ffcc00); /* تدرج أحمر وأصفر */
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        button:hover {
+            background: linear-gradient(135deg, #ffcc00, #ff6f61); /* تدرج أصفر وأحمر */
+        }
+
+        .loader {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1.2rem;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1rem;
+            color: #ffeb3b; /* لون أصفر */
+            display: none; /* إخفاء التذييل حتى يتم إدخال كلمة المرور */
+        }
+
+        footer a {
+            color: #ffeb3b; /* لون أصفر */
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        .password-prompt {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .password-prompt input {
+            padding: 10px;
+            border: 2px solid #ffeb3b;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            font-size: 1rem;
+            margin-right: 10px;
+        }
+
+        .password-prompt button {
+            padding: 10px 20px;
+            background: #ffeb3b; /* لون أصفر */
+            border: none;
+            border-radius: 5px;
+            color: #000;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .error-message {
+            color: #ff6f61; /* لون أحمر */
+            margin-top: 10px;
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .container {
+                padding: 15px;
+            }
+
+            th, td {
+                padding: 10px;
+            }
+
+            button {
+                font-size: 1rem;
+            }
+
+            footer {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="password-prompt">
+        <input type="password" id="passwordInput" placeholder="أدخل كلمة المرور">
+        <button onclick="checkPassword()">دخول</button>
+        <div class="error-message" id="errorMessage">كلمة المرور غير صحيحة!</div>
+    </div>
+
+    <div class="container">
+        <h1>استيراد جهات الاتصال Sam Tech</h1>
+        <input type="file" id="fileInput" accept=".xlsx, .csv">
+        <table id="contactsTable">
+            <thead>
+                <tr>
+                    <th>الاسم</th>
+                    <th>رقم الهاتف</th>
+                    <th>رقم هاتف المنزل</th>
+                    <th>العنوان</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+        <button id="exportVcf">تصدير إلى VCF</button>
+        <div class="loader" id="loader">جاري التصدير، الرجاء الانتظار...</div>
+    </div>
+
+    <footer>
+        تصميم: م. عبدالله الرجوي<br>
+        ت: <a href="tel:+967772237880">772237880</a><br>
+        الحقوق محفوظة &copy; 2025
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
+    <script>
+        // كلمة المرور الصحيحة
+        const correctPassword = "302024";
+
+        // التحقق من كلمة المرور
+        function checkPassword() {
+            const passwordInput = document.getElementById('passwordInput').value;
+            const errorMessage = document.getElementById('errorMessage');
+            const container = document.querySelector('.container');
+            const footer = document.querySelector('footer');
+
+            if (passwordInput === correctPassword) {
+                container.style.display = 'block';
+                footer.style.display = 'block';
+                document.querySelector('.password-prompt').style.display = 'none';
+            } else {
+                errorMessage.style.display = 'block';
+            }
+        }
+
+        document.getElementById('fileInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const data = e.target.result;
+                    if (file.name.endsWith('.xlsx')) {
+                        processExcel(data);
+                    } else if (file.name.endsWith('.csv')) {
+                        processCSV(data);
+                    }
+                };
+                reader.readAsBinaryString(file);
+            }
+        });
+
+        function processExcel(data) {
+            const workbook = XLSX.read(data, { type: 'binary' });
+            const firstSheetName = workbook.SheetNames[0];
+            const worksheet = workbook.Sheets[firstSheetName];
+            const json = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+            displayContacts(json);
+        }
+
+        function processCSV(data) {
+            const rows = data.split('\n').map(row => row.split(','));
+            displayContacts(rows);
+        }
+
+        function displayContacts(contacts) {
+            const tbody = document.querySelector('#contactsTable tbody');
+            tbody.innerHTML = '';
+            contacts.forEach(row => {
+                const tr = document.createElement('tr');
+                row.forEach(cell => {
+                    const td = document.createElement('td');
+                    td.textContent = cell;
+                    tr.appendChild(td);
+                });
+                tbody.appendChild(tr);
+            });
+        }
+
+        document.getElementById('exportVcf').addEventListener('click', function() {
+            const contacts = [];
+            const rows = document.querySelectorAll('#contactsTable tbody tr');
+            rows.forEach(row => {
+                const cells = row.querySelectorAll('td');
+                contacts.push({
+                    name: cells[0].textContent,
+                    phone: cells[1].textContent,
+                    homePhone: cells[2].textContent,
+                    address: cells[3].textContent
+                });
+            });
+
+            // إظهار مؤشر التحميل
+            document.getElementById('loader').style.display = 'block';
+
+            // تأخير التصدير لضمان عدم تجميد المتصفح
+            setTimeout(() => {
+                exportToVCF(contacts);
+                document.getElementById('loader').style.display = 'none';
+            }, 100);
+        });
+
+        function exportToVCF(contacts) {
+            let vcfContent = '';
+            contacts.forEach(contact => {
+                vcfContent += `BEGIN:VCARD\n`;
+                vcfContent += `VERSION:3.0\n`;
+                vcfContent += `FN:${contact.name}\n`;
+                vcfContent += `TEL;TYPE=CELL:${contact.phone}\n`;
+                vcfContent += `TEL;TYPE=HOME:${contact.homePhone}\n`;
+                vcfContent += `ADR:;;${contact.address}\n`;
+                vcfContent += `END:VCARD\n`;
+            });
+            const blob = new Blob([vcfContent], { type: 'text/vcard' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'contacts.vcf'; // اسم الملف الافتراضي
+            link.click();
+        }
+    </script>
+</body>
+</html>
